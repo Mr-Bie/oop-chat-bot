@@ -56,7 +56,7 @@ export default function ConversationButton({ conversation, active, onClick, onDe
     return (
         <>
             <div
-                className={`p-2 cursor-pointer ${active ? 'bg-blue-200' : 'bg-gray-100'}`}
+                className={`rounded-sm p-2 cursor-pointer ${active ? 'bg-blue-200' : 'bg-gray-100'}`}
                 onClick={() => onClick(conversation.id)}
                 onContextMenu={handleRightClick}
             >

@@ -19,7 +19,7 @@ export default async function UserConversations({
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">مدیریت مکالمه ها</h1>
 
-            <div className="space-y-6">
+            <div className="flex flex-row flex-wrap">
                 {conversations.map((con) => (
                     <AdminConversationCard key={con.id} conversation={con} />
                 ))}

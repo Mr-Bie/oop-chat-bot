@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/common/button";
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Loading from '../common/loading';
 import { Message } from '@/models/message';
 import Link from 'next/link';
 import ConversationButton from './ConversationButton';
 import { Conversation } from '@/models/conversation';
+import { Icon } from '../common/icon';
+import MessageComponent from './MessageComponent';
 
 export default function ChatForm() {
     const { data: session } = useSession();
@@ -89,7 +91,7 @@ export default function ChatForm() {
     return (
         <div className="w-full min-h-screen p-12 flex flex-col items-center">
             <div className="w-full flex justify-between mb-4">
-                <Link href="/dashboard"><Button onClick={() => signOut()}>{session.user.email}</Button></Link>
+                <Link href="/dashboard"><Button className='flex flex-row-reverse justify-center items-center gap-2'><Icon solid>user</Icon>{session.user.email}</Button></Link>
                 <Button onClick={createConversation}>مکالمه جدید</Button>
             </div>
 
@@ -110,10 +112,8 @@ export default function ChatForm() {
                     <div className="flex-grow p-4">
                         <div>
                             <div className="space-y-3 h-96 overflow-y-auto border p-2 rounded bg-gray-50">
-                                {messages.map((msg, index) => (
-                                    <div key={index}>
-                                        <span className={`block p-2 rounded ${msg.role === 'bot' ? 'bg-blue-100 text-left' : 'bg-green-100 text-right'}`}>{msg.content}</span>
-                                    </div>
+                                {messages.map((msg) => (
+                                    <MessageComponent key={msg.id} message={msg} />
                                 ))}
                             </div>
                         </div>
