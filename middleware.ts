@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
-import { notFound } from "next/navigation";
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
@@ -45,7 +44,8 @@ export async function middleware(req: NextRequest) {
 
   // Check admin-specific route access
   if (isAdminRoute && !isAdmin) {
-    return notFound();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
   }
 
   // Allow the request to proceed
