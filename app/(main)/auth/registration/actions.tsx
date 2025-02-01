@@ -12,7 +12,7 @@ import { ACTION_RESPONSE_MESSAGES } from '@/constants/ui';
 
 const userRegistrationSchema = yup.object().shape({
   name: yup.string().required(),
-  email: emailValidator.notRequired(),
+  email: emailValidator,
   password: passwordValidator,
 });
 

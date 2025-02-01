@@ -17,7 +17,7 @@ export default function ChangePassword() {
       data,
       editUserPasswordAction,
       (response) => {
-        showToast(response.data, 'success');
+        showToast(response.data as string, 'success');
         signOut({ callbackUrl: '/auth/login' });
       },
       (response) => showToast(response.message, 'error')

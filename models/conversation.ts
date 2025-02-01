@@ -1,4 +1,4 @@
 export interface Conversation {
   id: number;
-  title?: string;
+  title: string | null;
 }

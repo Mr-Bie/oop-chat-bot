@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth/next";
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  const user = await getUserInfo(session?.user?.id);
+  const user = await getUserInfo(Number(session?.user?.id));
 
   console.log(session, user);
 

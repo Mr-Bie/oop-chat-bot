@@ -1,12 +1,12 @@
 import prisma from "@/lib/prisma";
 
 export interface UserInfo {
-  id: string;
+  id: number;
   email: string;
-  name: string;
+  name: string | null;
 }
 
-export const getUserInfo = async (id: string): Promise<UserInfo | null> => {
+export const getUserInfo = async (id: number): Promise<UserInfo | null> => {
   if (!id) return null;
 
   return await prisma.user.findFirstOrThrow({

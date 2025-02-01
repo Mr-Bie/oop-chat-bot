@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import * as yup from "yup";
 import { emailValidator } from "@/lib/validation";
+import { Session } from "next-auth";
 
 // Validation schema for login
 const LoginSchema = yup.object().shape({
@@ -49,8 +50,6 @@ export const authOptions = {
           email: user.email,
           role: user.role,
         };
-
-        return null;
       },
     }),
   ],
@@ -63,9 +62,9 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: Session; token: any }) {
       if (token) {
-        session.user.id = token.id as string;
+        session.user.id = token.id as number;
         session.user.email = token.email as string;
         session.user.role = token.role as string;
       }
@@ -82,7 +81,7 @@ export const authOptions = {
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string;
+      id: number;
       email: string;
       role: string;
     };

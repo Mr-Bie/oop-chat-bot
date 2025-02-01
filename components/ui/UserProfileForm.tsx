@@ -8,6 +8,7 @@ import { useToast } from '../common/toast';
 import { editUserProfileAction } from '@/app/(user)/dashboard/action';
 import { Input } from '../common/input';
 import Form from '../common/form';
+import { FieldValues } from 'react-hook-form';
 
 type UserProfileFormProps = {
   user: UserInfo;
@@ -17,7 +18,7 @@ export default function UserProfileForm({ user }: UserProfileFormProps) {
   const { showToast } = useToast();
   const router = useRouter();
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: FieldValues) => {
     data['id'] = user.id;
     console.log('admin upload new event data : ', data);
 
@@ -25,7 +26,7 @@ export default function UserProfileForm({ user }: UserProfileFormProps) {
       data,
       editUserProfileAction,
       (response) => {
-        showToast(response.data, 'success');
+        showToast(response.data as string, 'success');
         router.refresh();
       },
       (response) => showToast(response.message, 'error')

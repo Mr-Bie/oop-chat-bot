@@ -1,19 +1,25 @@
 import { ACTION_RESPONSE_MESSAGES } from "@/constants/ui";
 
-type SuccessFullActionResponse = { success: true; data: any };
+type SuccessFullActionResponse = {
+  success: true;
+  data: Record<string, unknown> | string;
+};
 type FailedActionResponse = { success: false; message: string };
 
 export type ActionResponse = Promise<
   SuccessFullActionResponse | FailedActionResponse
 >;
 
-export function parseFromFormData(formData: FormData): { [key: string]: any } {
-  const result: { [key: string]: any } = {};
+export function parseFromFormData(formData: FormData): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
 
   // A helper function to navigate or create nested structures in result
-  function setNestedValue(data: any, keys: string[], value: any) {
+  function setNestedValue(
+    data: Record<string, unknown>,
+    keys: string[],
+    value: unknown
+  ) {
     let current = data;
-    let lastKey = keys[keys.length - 1];
 
     keys.forEach((key, index) => {
       if (index === keys.length - 1) {
@@ -45,7 +51,7 @@ export function parseFromFormData(formData: FormData): { [key: string]: any } {
             current[key] = {};
           }
         }
-        current = current[key];
+        current = current[key] as Record<string, unknown>;
       }
     });
   }
@@ -78,12 +84,15 @@ export function parseFromFormData(formData: FormData): { [key: string]: any } {
   return result;
 }
 
-export function parseToFormData(data: any, parentKey = ""): FormData {
+export function parseToFormData(
+  data: Record<string, unknown>,
+  parentKey = ""
+): FormData {
   const formData = new FormData();
 
-  function appendFormData(key: string, value: any) {
+  function appendFormData(key: string, value: unknown) {
     if (value instanceof File) {
-      formData.append(key, value);
+      formData.append(key, value as string | Blob);
     } else if (value instanceof Blob) {
       formData.append(key, value, "blob");
     } else if (Array.isArray(value)) {
@@ -92,10 +101,13 @@ export function parseToFormData(data: any, parentKey = ""): FormData {
       });
     } else if (typeof value === "object" && value !== null) {
       Object.keys(value).forEach((nestedKey) => {
-        appendFormData(`${key}[${nestedKey}]`, value[nestedKey]);
+        appendFormData(
+          `${key}[${nestedKey}]`,
+          (value as Record<string, unknown>)[nestedKey]
+        );
       });
     } else {
-      formData.append(key, value);
+      formData.append(key, value as string);
     }
   }
 
@@ -108,10 +120,10 @@ export function parseToFormData(data: any, parentKey = ""): FormData {
 }
 
 export async function handleServerAction(
-  data: any,
+  data: Record<string, unknown>,
   action: (data: FormData) => ActionResponse,
-  successCallback: (response: SuccessFullActionResponse) => any,
-  failCallback: (response: FailedActionResponse) => any
+  successCallback: (response: SuccessFullActionResponse) => void,
+  failCallback: (response: FailedActionResponse) => void
 ) {
   const formData = parseToFormData(data);
 

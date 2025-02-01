@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactElement, ReactNode, useEffect, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo } from 'react';
 import {
   useForm,
   FormProvider,
@@ -9,17 +9,16 @@ import {
 } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
+import { Button } from '@/components/common/button';
+import { InputProps } from '@/components/common/input';
 import Loading from './loading';
 import { cn } from '@/lib/utils';
-import { Button, ButtonProps } from './button';
-import { InputProps } from './input';
 
 interface FormProps<T extends FieldValues> {
   onSubmit: SubmitHandler<T>;
   submitText?: string;
-  triggerOnMount?: unknown;
-  customSubmitButton?: ReactElement<ButtonProps> & { children?: Element[] };
+  triggerOnMount?: boolean;
+  customSubmitButton?: ReactNode;
   children: ReactNode;
   defaultValues?: FieldValues;
   className?: string;
@@ -61,31 +60,20 @@ function Form({
   const defaultClassNames = 'space-y-4';
   const classNames = cn(defaultClassNames, className);
 
-  const defaultSubmitButtonClassNames = "w-full font-light";
-  const submitButtonClassNames = cn(defaultSubmitButtonClassNames, customSubmitButton ? customSubmitButton.props.className : "")
-  const defaultSubmitButtonProps = {
-    className: submitButtonClassNames,
-    variant: "default",
-    type: "submit",
-    size: "icon",
-    disabled: !isValid || isSubmitting || customSubmitButton?.props.disabled,
-    children: isSubmitting ? <Loading /> : customSubmitButton ?
-      (customSubmitButton.props.children instanceof Array ? customSubmitButton.props.children.map((v) => React.cloneElement(v, { key: `fcb-${v.i}-${Math.random().toString()}` })) : customSubmitButton.props.children)
-      : submitText
-  }
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className={classNames}>
         {children}
-        {customSubmitButton ?
-          React.cloneElement(customSubmitButton, { ...customSubmitButton.props, ...defaultSubmitButtonProps as ButtonProps })
-          :
-          (
-            <Button
-              {...defaultSubmitButtonProps as ButtonProps}
-            />
-          )}
+        {!customSubmitButton && (
+          <Button
+            variant="default"
+            type="submit"
+            className="w-full"
+            disabled={!isValid || isSubmitting}
+          >
+            {isSubmitting ? <Loading /> : submitText}
+          </Button>
+        )}
       </form>
     </FormProvider>
   );
@@ -100,19 +88,21 @@ const extractValidationSchemaFromFields = (
     React.Children.forEach(nodes, (child) => {
       if (React.isValidElement(child)) {
         // If the child is an `Input` with validation
-        if (child.props.name && child.props.validation) {
-          schema[child.props.name] = child.props.validation; // Add validation to schema
-        } else if (child.props.inputs) {
+        if (typeof child.props === 'object' && child.props !== null && 'name' in child.props && 'validation' in child.props) {
+          schema[child.props.name as string] = child.props.validation as yup.AnySchema; // Add validation to schema
+        } else if (typeof child.props === 'object' && child.props !== null && 'inputs' in child.props) {
           const validationForDynamicFields = getDynamicInputsValidation(
-            child.props.inputs,
-            child.props.required
+            child.props.inputs as InputProps[],
+            'required' in child.props ? (child.props.required as boolean) : false
           );
-          schema[child.props.name] = validationForDynamicFields;
+          if ('name' in child.props) {
+            schema[child.props.name as string] = validationForDynamicFields;
+          }
         }
 
         // If the child has nested children, traverse them
-        if (child.props.children) {
-          traverse(child.props.children);
+        if (typeof child.props === 'object' && child.props !== null && 'children' in child.props) {
+          traverse(child.props.children as ReactNode);
         }
       }
     });

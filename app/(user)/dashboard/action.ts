@@ -47,7 +47,7 @@ export async function editUserProfileAction(data: FormData): ActionResponse {
 
   await prisma.user.update({
     where: {
-      id: userId,
+      id: Number(userId),
     },
     data: rest,
   });
@@ -86,7 +86,7 @@ export async function editUserPasswordAction(data: FormData): ActionResponse {
   const hashedPassword = await hashPassword(validatedData.password);
 
   await prisma.user.update({
-    where: { id },
+    where: { id: Number(id) },
     data: { password: hashedPassword },
   });
 

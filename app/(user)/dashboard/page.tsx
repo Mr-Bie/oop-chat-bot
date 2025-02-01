@@ -5,11 +5,11 @@ import { getUserInfo } from '@/models/user';
 import UserProfileForm from '@/components/ui/UserProfileForm';
 
 export default async function UserProfilePage() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession({ ...authOptions });
 
   if (!session || !session.user || !session.user.id) notFound();
 
-  const user = await getUserInfo(session.user.id);
+  const user = await getUserInfo(Number(session.user.id));
 
   if (!user) notFound();
 

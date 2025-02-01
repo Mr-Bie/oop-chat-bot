@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import { FileInput, FileInputProps } from './inputs/file';
 import { AnySchema } from 'yup';
 import { Icon } from './icon';
 
@@ -18,9 +17,7 @@ export interface InputPropsBase {
   onChange?: (...props: unknown[]) => void;
 }
 
-export type InputProps =
-  | ({ type: 'file' } & FileInputProps)
-  | DefaultInputProps;
+export type InputProps = DefaultInputProps;
 
 interface DefaultInputProps
   extends InputPropsBase,
@@ -57,13 +54,6 @@ export const Input: React.FC<InputProps> = (props: InputProps) => {
 
   let inputJSX;
   switch (computedType) {
-    case 'file': {
-      inputJSX = (
-        <FileInput {...(computedProps as FileInputProps)} />
-      );
-      break;
-    }
-
     default:
       inputJSX = (
         <input

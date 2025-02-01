@@ -45,6 +45,12 @@ export default function UserPanelTemplate({
             onClick={() => setSidebarOpen(false)}
           />
           <SideBarLink
+            href="/dashboard"
+            icon="user"
+            text="پروفایل"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <SideBarLink
             href=""
             icon="log-out"
             text="خروج از حساب"

@@ -72,15 +72,15 @@ export default function ToastProvider({ children }: ToastProviderProps) {
         autoHideDuration={3000}
         onClose={handleClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        ContentProps={{ className: 'font-yekanbakh rounded-full' }}
-        className="font-yekanbakh rounded-full"
+        ContentProps={{ className: 'font-iransans rounded-full' }}
+        className="font-iransans rounded-full"
         sx={{ display: 'flex', gap: '0.2rem' }}
       >
         <Alert
           onClose={handleClose}
           severity={toast.severity}
           sx={{ width: '100%', display: 'flex', gap: '0.5rem' }}
-          className="font-yekanbakh"
+          className="font-iransans"
         >
           {toast.message}
         </Alert>
