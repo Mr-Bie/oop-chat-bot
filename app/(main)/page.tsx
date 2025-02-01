@@ -11,11 +11,9 @@ export default async function Home() {
 
   console.log(session, user);
 
-  return (<>
+  return (
     (user ? (
-    <ChatForm></ChatForm>) : (
-    <Loading />
-    ))
-
-  </>);
+      <ChatForm></ChatForm>) : (
+      <Loading />
+    )));
 }
