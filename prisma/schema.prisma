@@ -1,0 +1,40 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  conversations Conversation[]
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  title     String    @default("مکالمه جدید")
+  messages  Message[]
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id              Int       @id @default(autoincrement())
+  role            String
+  content         String
+  createdAt       DateTime  @default(now())
+  conversationId  Int
+  conversation    Conversation @relation(fields: [conversationId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
