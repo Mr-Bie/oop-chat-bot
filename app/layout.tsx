@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local';
 import "./globals.css";
+import "./globalicons.css";
 import ToastProvider from "@/components/common/toast";
 import SessionProviderWrapper from "@/components/common/sessionProviderWrapper";
 
